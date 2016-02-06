@@ -1,5 +1,11 @@
 # machine-uuid
-simple node module to generate a machine uuid
+simple node module to generate a machine uuid. (require node v4+)
+
+## installation
+
+```sh
+npm install machine-uuid
+```
 
 ## usage
 
