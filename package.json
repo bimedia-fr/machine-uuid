@@ -4,7 +4,7 @@
   "description": "simple node module to generate a machine uuid",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodeunit test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,12 @@
   "bugs": {
     "url": "https://github.com/bimedia-fr/machine-uuid/issues"
   },
-  "homepage": "https://github.com/bimedia-fr/machine-uuid#readme"
+  "homepage": "https://github.com/bimedia-fr/machine-uuid#readme",
+  "dependencies": {
+    "isuuid": "^0.1.0",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "nodeunit": "^0.11.2"
+  }
 }

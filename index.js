@@ -1,5 +1,8 @@
 var  os = require('os'),
-    crypto = require('crypto');
+    crypto = require('crypto'),
+    uuidv4 = require('uuid/v4'),
+    isuuid = require('isuuid'),
+    uuidv5 = require('uuid/v5');
 
 function macs() {
     var n = os.networkInterfaces(), x = {};
@@ -10,17 +13,33 @@ function macs() {
     }), Object.keys(x);
 }
 
-function generate() {
-  var id = os.cpus().map(function(cpu) {
-      return cpu.model;
-  }).join(':') + '|' + os.totalmem() + '|' + macs().join('|');
-  return crypto.createHash('md5').update(id).digest('hex');
+function toArray(buf) {
+    var ab = [];
+    for (var i = 0; i < buf.length && i < 16; ++i) {
+        var code = buf.charCodeAt(i);
+        ab = ab.concat([code]);
+    }
+    for (var i = buf.length; i < 16; ++i) {
+        ab = ab.concat([0]);
+    }
+    return ab;
 }
 
-var id = generate();
-var uuid = id.substring(0, 8) + '-' + id.substring(8, 12) + '-' + id.substring(12, 16) + '-' + id.substring(16, 20) + '-' + id.substring(20);
-
-module.exports = {
-    id : id,
-    uuid : uuid
+module.exports = function (namespace) {
+    var ns = namespace || uuidv4();
+    
+    if (!isuuid(ns)) {
+        if (typeof ns != 'string') {
+            throw TypeError('namespace must be uuid or a string')
+        }
+        ns = toArray(ns);
+    }
+    
+    function generate() {
+      var id = os.cpus().map(function(cpu) {
+          return cpu.model;
+      }).join(':') + '|' + os.totalmem() + '|' + macs().join('|');
+      return crypto.createHash('sha1').update(id).digest('hex');
+    }
+    return uuidv5(generate(), ns);
 };
