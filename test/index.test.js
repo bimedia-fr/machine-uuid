@@ -55,5 +55,41 @@ module.exports = {
         test.ok(uuid2);
         test.notEqual(uuid, uuid2, 'uuid is not consistent through different manespaces');
         test.done();
+    },
+    testMacCollision: function(test) {
+        var sample1 = { 
+           enp1s0: 
+            [ { address: '10.1.17.173',
+                netmask: '255.255.0.0',
+                family: 'IPv4',
+                mac: '00:71:C2:40:09:4F',
+                internal: false,
+                cidr: '10.1.17.173/16' },
+              { address: 'af20::75a4:79f9:66c0:c3ab',
+                netmask: 'ffff:ffff:ffff:ffff::',
+                family: 'IPv6',
+                mac: '00:71:C2:40:09:4F',
+                scopeid: 2,
+                internal: false,
+                cidr: 'af20::75a4:79f9:66c0:c3ab/64' } ] };
+        var sample2 = { 
+            enp1s0: 
+                [ { address: '10.1.17.173',
+                    netmask: '255.255.0.0',
+                    family: 'IPv4',
+                    mac: '00:71:C2:3E:52:66',
+                    internal: false,
+                    cidr: '10.1.17.173/16' },
+                { address: 'af20::75a4:79f9:66c0:c3ab',
+                    netmask: 'ffff:ffff:ffff:ffff::',
+                    family: 'IPv6',
+                    mac: '00:71:C2:3E:52:66',
+                    scopeid: 2,
+                    internal: false,
+                    cidr: 'af20::75a4:79f9:66c0:c3ab/64' } ] };
+
+                test.ok(machine.macs(sample1) != machine.macs(sample2));
+
+                test.done();
     }
 }

@@ -4,11 +4,11 @@ var  os = require('os'),
     isuuid = require('isuuid'),
     uuidv5 = require('uuid/v5');
 
-function macs() {
-    var n = os.networkInterfaces(), x = {};
+function macs(n) {
+    var x = {};
     return Object.keys(n).filter(function(v) {
         return !n[v].forEach(function(v) {
-            v.mac.substr(0, v.mac.indexOf(":")) !== "00" && (x[v.mac] = 1);
+            v.mac !== "00:00:00:00:00:00" && (x[v.mac] = 1);
         })
     }), Object.keys(x);
 }
@@ -38,8 +38,10 @@ module.exports = function (namespace) {
     function generate() {
       var id = os.cpus().map(function(cpu) {
           return cpu.model;
-      }).join(':') + '|' + os.totalmem() + '|' + macs().join('|');
+      }).join(':') + '|' + os.totalmem() + '|' + macs(os.networkInterfaces()).join('|');
       return crypto.createHash('sha1').update(id).digest('hex');
     }
     return uuidv5(generate(), ns);
 };
+
+module.exports.macs = macs;
