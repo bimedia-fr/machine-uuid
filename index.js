@@ -4,6 +4,9 @@ var  os = require('os'),
     isuuid = require('isuuid'),
     uuidv5 = require('uuid/v5');
 
+// wmic drive serialnumber
+// see https://github.com/mhzed/machine-uuid/blob/master/index.js
+
 function macs(n) {
     var x = {};
     return Object.keys(n).filter(function(v) {
@@ -25,8 +28,28 @@ function toArray(buf) {
     return ab;
 }
 
-module.exports = function (namespace) {
+/**
+ * default invariant func based on cpu, macs address and memory
+ * @returns id
+ */
+function generate() {
+  return os.cpus().map(function(cpu) {
+      return cpu.model;
+  }).join(':') + '|' + os.totalmem() + '|' + macs(os.networkInterfaces()).join('|');
+}
+
+/**
+ * return sha1 hash data
+ * @param {String} data 
+ * @returns sha1 hash
+ */
+function hash(data) {
+    return crypto.createHash('sha1').update(data).digest('hex');
+}
+
+module.exports = function (namespace, invariant) {
     var ns = namespace || uuidv4();
+    var func = invariant || generate;
     
     if (!isuuid(ns)) {
         if (typeof ns != 'string') {
@@ -35,13 +58,7 @@ module.exports = function (namespace) {
         ns = toArray(ns);
     }
     
-    function generate() {
-      var id = os.cpus().map(function(cpu) {
-          return cpu.model;
-      }).join(':') + '|' + os.totalmem() + '|' + macs(os.networkInterfaces()).join('|');
-      return crypto.createHash('sha1').update(id).digest('hex');
-    }
-    return uuidv5(generate(), ns);
+    return uuidv5(hash(func()), ns);
 };
 
 module.exports.macs = macs;
