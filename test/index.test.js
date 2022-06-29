@@ -78,7 +78,7 @@ describe('machine-uuid', () => {
             var uuid1 = machine(namespace, invariant);
             var uuid2 = machine(namespace, invariant);
             assert.ok(uuid2);
-            assert.equal(uuid1, uuid2, 'uuid is not consistent through different manespaces');
+            assert.equal(uuid1, uuid2, 'uuid is not consistent through manespaces');
         });
     });
 });
