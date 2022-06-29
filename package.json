@@ -1,6 +1,6 @@
 {
   "name": "bimedia-machine-uuid",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "simple node module to generate a machine uuid",
   "main": "index.js",
   "scripts": {
